@@ -1,0 +1,33 @@
+{
+  "name": "shelf",
+  "version": "0.0.1",
+  "description": "Redis Object Document Mapper (ODM)",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "keywords": [
+    "redis",
+    "odm",
+    "object",
+    "document",
+    "mapper",
+    "storage",
+    "fast"
+  ],
+  "author": {
+    "name": "Ricardo Barros",
+    "email": "ricardofbarros@hotmail.com"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^2.2.5",
+    "standard": "^5.0.0"
+  },
+  "dependencies": {
+    "callsite": "^1.0.0",
+    "hiredis": "^0.4.0",
+    "redis": "^0.12.1",
+    "xtend": "^4.0.0"
+  }
+}
