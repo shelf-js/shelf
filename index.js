@@ -55,7 +55,7 @@ Shelf.prototype.extend = function (options) {
       if (util.isObject(options.props[k]) || util.isArray(options.props[k])) {
         t = 1
       } else {
-        t = supportedTypes.indexOf(options.props[k])
+        t = supportedTypes.indexOf(options.props[k].toLowerCase())
       }
 
       var type = options.props[k]
@@ -89,7 +89,7 @@ Shelf.prototype.extend = function (options) {
 
 Shelf.prototype.loadMetadata = function () {
   this.client.select(0, function () {
-    console.log('arguments');
+    console.log('arguments')
   })
 }
 
