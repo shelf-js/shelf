@@ -120,7 +120,7 @@ Shelf.prototype.loadMetadata = function () {
     // queued
     self.storage.__client__.on_ready()
 
-    self.mountQueue = null
+    self.storage.mountQueue = null
   }
 
   this.storage.once('ready', function () {
