@@ -3,7 +3,6 @@ var Model = require('./lib/Model')
 var callsite = require('callsite')
 var util = require('./lib/util')
 var Metadata = require('./lib/metadata')
-var Queue = require('redis/lib/queue')
 var Storage = require('./lib/client')
 var redis = require('redis')
 
@@ -23,7 +22,6 @@ function Shelf (appName, options) {
   // }
   this.appName = appName
   this.storage = new Storage()
-  this.mountQueue = new Queue()
 
   // Switch the default extend and make
   // this extend method public
@@ -95,7 +93,7 @@ Shelf.prototype.extend = function (options) {
 
   options.storage = this.storage
 
-  return new Model(options, this.mountQueue)
+  return new Model(options)
 }
 
 Shelf.prototype.loadMetadata = function () {
@@ -112,8 +110,8 @@ Shelf.prototype.loadMetadata = function () {
 
     // Push everything from mountQueue to the
     // redis module internal offline_queue
-    while (self.mountQueue.length > 0) {
-      self.storage.__client__.offline_queue.push(self.mountQueue.shift())
+    while (self.storage.mountQueue.length > 0) {
+      self.storage.__client__.offline_queue.push(self.storage.mountQueue.shift())
     }
 
     // Fire ready event again and
@@ -133,32 +131,37 @@ Shelf.prototype.loadMetadata = function () {
     var connectionClient = redis.createClient()
 
     // Select database 0 and then get the metadata we need
-    connectionClient.select(0, function () {
-      connectionClient.get(self.appName + ':metadata', function (err, metadata) {
-        if (err) {
-          throw err
-        }
+    connectionClient.get(self.appName + ':metadata', function (err, metadata) {
+      if (err) {
+        throw err
+      }
 
-        if (!metadata) {
-          metadata = new Metadata(self.storage)
-          metadata.build(selectDatabase)
-        }
+      if (!metadata) {
+        metadata = new Metadata(self.storage)
+        metadata.build(selectDatabase)
+      }
 
-        try {
-          metadata = JSON.parse(metadata)
-        } catch (e) {
-          throw e
-        }
+      try {
+        metadata = JSON.parse(metadata)
+      } catch (e) {
+        throw e
+      }
 
-        return selectDatabase(metadata)
-      })
+      return selectDatabase(metadata)
     })
   })
 }
 
 function appRegister (appName, options) {
   shelf = new Shelf(appName, options)
-  shelf.loadMetadata()
+
+  // TODO review the name of this option and
+  // which state is deafult
+  if (options.deploy === 'decicated') {
+    shelf.storage.mountQueue = null
+  } else {
+    shelf.loadMetadata()
+  }
 }
 
 // u mad homie?
