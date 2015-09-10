@@ -93,10 +93,7 @@ Shelf.prototype.extend = function (options) {
     }
   })
 
-  options.storage = this.client
-  options.fakeStorage = function () {
-
-  }
+  options.storage = this.storage
 
   return new Model(options, this.mountQueue)
 }
@@ -108,30 +105,30 @@ Shelf.prototype.loadMetadata = function () {
     self.metadata = meta
 
     // Select the database the app uses
-    self.client.select(meta.dbIndex, function () {
+    self.storage.select(meta.dbIndex, function () {
       // Set ready to true and process the offline queue
-      self.client.on_ready()
+      self.storage.__client__.on_ready()
     })
 
     // Push everything from mountQueue to the
     // redis module internal offline_queue
     while (self.mountQueue.length > 0) {
-      self.client.offline_queue.push(self.mountQueue.shift())
+      self.storage.__client__.offline_queue.push(self.mountQueue.shift())
     }
 
     // Fire ready event again and
     // iterate over offline_queue
     // to send all commands that were
     // queued
-    self.client.on_ready()
+    self.storage.__client__.on_ready()
 
     self.mountQueue = null
   }
 
-  this.client.once('ready', function () {
+  this.storage.once('ready', function () {
     // node_redis module secret flags. shhhh!
-    self.client.ready = false
-    self.client.send_anyway = false
+    self.storage.__client__.ready = false
+    self.storage.__client__.send_anyway = false
 
     var connectionClient = redis.createClient()
 
@@ -143,7 +140,7 @@ Shelf.prototype.loadMetadata = function () {
         }
 
         if (!metadata) {
-          metadata = new Metadata(self.client)
+          metadata = new Metadata(self.storage)
           metadata.build(selectDatabase)
         }
 
