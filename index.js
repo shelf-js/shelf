@@ -1,5 +1,5 @@
 // Dependencies
-var Model = require('./lib/Model')
+var Model = require('./lib/model')
 var callsite = require('callsite')
 var util = require('./lib/util')
 var Metadata = require('./lib/metadata')
@@ -25,7 +25,7 @@ function Shelf (appName, options) {
 
   // Switch the default extend and make
   // this extend method public
-  exports.extend = this.extend.bind(this)
+  // exports.extend = this.extend.bind(this)
 }
 
 Shelf.prototype.extend = function (options) {
@@ -59,7 +59,7 @@ Shelf.prototype.extend = function (options) {
   for (var k in options.props) {
     if (options.props.hasOwnProperty(k)) {
       var t
-
+      options.props[k] = options.props[k].toLowerCase()
       // If its an object or an array
       if (util.isObject(options.props[k]) || util.isArray(options.props[k])) {
         t = 1
@@ -157,11 +157,13 @@ function appRegister (appName, options) {
 
   // TODO review the name of this option and
   // which state is deafult
-  if (options.deploy === 'decicated') {
+  options.deploy = options.deploy || 'dedicated'
+  if (options.deploy === 'dedicated') {
     shelf.storage.mountQueue = null
   } else {
     shelf.loadMetadata()
   }
+  return shelf
 }
 
 // u mad homie?
