@@ -3,7 +3,6 @@ var Model = require('./lib/Model')
 var callsite = require('callsite')
 var util = require('./lib/util')
 var Metadata = require('./lib/metadata')
-var Queue = require('redis/lib/queue')
 var Storage = require('./lib/client')
 var redis = require('redis')
 
@@ -23,7 +22,6 @@ function Shelf (appName, options) {
   // }
   this.appName = appName
   this.storage = new Storage()
-  this.mountQueue = new Queue()
 
   // Switch the default extend and make
   // this extend method public
@@ -93,12 +91,9 @@ Shelf.prototype.extend = function (options) {
     }
   })
 
-  options.storage = this.client
-  options.fakeStorage = function () {
+  options.storage = this.storage
 
-  }
-
-  return new Model(options, this.mountQueue)
+  return new Model(options)
 }
 
 Shelf.prototype.loadMetadata = function () {
@@ -108,60 +103,65 @@ Shelf.prototype.loadMetadata = function () {
     self.metadata = meta
 
     // Select the database the app uses
-    self.client.select(meta.dbIndex, function () {
+    self.storage.select(meta.dbIndex, function () {
       // Set ready to true and process the offline queue
-      self.client.on_ready()
+      self.storage.__client__.on_ready()
     })
 
     // Push everything from mountQueue to the
     // redis module internal offline_queue
-    while (self.mountQueue.length > 0) {
-      self.client.offline_queue.push(self.mountQueue.shift())
+    while (self.storage.mountQueue.length > 0) {
+      self.storage.__client__.offline_queue.push(self.storage.mountQueue.shift())
     }
 
     // Fire ready event again and
     // iterate over offline_queue
     // to send all commands that were
     // queued
-    self.client.on_ready()
+    self.storage.__client__.on_ready()
 
     self.mountQueue = null
   }
 
-  this.client.once('ready', function () {
+  this.storage.once('ready', function () {
     // node_redis module secret flags. shhhh!
-    self.client.ready = false
-    self.client.send_anyway = false
+    self.storage.__client__.ready = false
+    self.storage.__client__.send_anyway = false
 
     var connectionClient = redis.createClient()
 
     // Select database 0 and then get the metadata we need
-    connectionClient.select(0, function () {
-      connectionClient.get(self.appName + ':metadata', function (err, metadata) {
-        if (err) {
-          throw err
-        }
+    connectionClient.get(self.appName + ':metadata', function (err, metadata) {
+      if (err) {
+        throw err
+      }
 
-        if (!metadata) {
-          metadata = new Metadata(self.client)
-          metadata.build(selectDatabase)
-        }
+      if (!metadata) {
+        metadata = new Metadata(self.storage)
+        metadata.build(selectDatabase)
+      }
 
-        try {
-          metadata = JSON.parse(metadata)
-        } catch (e) {
-          throw e
-        }
+      try {
+        metadata = JSON.parse(metadata)
+      } catch (e) {
+        throw e
+      }
 
-        return selectDatabase(metadata)
-      })
+      return selectDatabase(metadata)
     })
   })
 }
 
 function appRegister (appName, options) {
   shelf = new Shelf(appName, options)
-  shelf.loadMetadata()
+
+  // TODO review the name of this option and
+  // which state is deafult
+  if (options.deploy === 'decicated') {
+    shelf.storage.mountQueue = null
+  } else {
+    shelf.loadMetadata()
+  }
 }
 
 // u mad homie?
