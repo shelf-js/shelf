@@ -1,6 +1,6 @@
 {
   "name": "shelf",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Redis Object Document Mapper (ODM)",
   "main": "index.js",
   "scripts": {
@@ -19,10 +19,15 @@
     "storage",
     "fast"
   ],
-  "author": {
-    "name": "Ricardo Barros",
-    "email": "ricardofbarros@hotmail.com"
-  },
+  "author": [
+    {
+      "name": "Ricardo Barros",
+      "email": "ricardofbarros@hotmail.com"
+    }, {
+      "name": "João Antunes",
+      "email": "j.goncalo.antunes@gmail.com"      
+    }
+  ],
   "license": "MIT",
   "devDependencies": {
     "mocha": "^2.2.5",
