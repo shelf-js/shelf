@@ -36,10 +36,12 @@ Shelf.prototype.extend = function (options) {
   options.props = options.props || options.properties
   // Same thing for model's key/keys
   options.keys = options.keys || options.key
+  // Same thing for model's default values
+  options.defaultValues = options.def || options.defaultValues || {}
 
   // Sane checks
   var nameCheck = (!options.name || typeof options.name !== 'string')
-  var propertiesCheck = (!options.props || options.props.length <= 0)
+  var propertiesCheck = (!options.props || Object.keys(options.props).length <= 0)
   var keyCheck = (!options.keys || options.keys.length <= 0)
 
   if (nameCheck) {
