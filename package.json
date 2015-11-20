@@ -4,7 +4,7 @@
   "description": "Redis Object Document Mapper (ODM)",
   "main": "index.js",
   "scripts": {
-    "test": "",
+    "test": "./node_modules/lab/bin/lab --verbose",
     "lint": "standard --verbose | snazzy"
   },
   "repository": "https://github.com/shelf-js/shelf",
@@ -24,13 +24,16 @@
     {
       "name": "Ricardo Barros",
       "email": "ricardofbarros@hotmail.com"
-    }, {
+    },
+    {
       "name": "João Antunes",
       "email": "j.goncalo.antunes@gmail.com"
     }
   ],
   "license": "MIT",
   "devDependencies": {
+    "code": "^2.0.1",
+    "lab": "^7.3.0",
     "mocha": "^2.2.5",
     "pre-commit": "^1.1.1",
     "snazzy": "^2.0.1",
@@ -39,6 +42,7 @@
   "dependencies": {
     "callsite": "^1.0.0",
     "hiredis": "^0.4.1",
+    "lodash": "^3.10.1",
     "redis": "^1.0.0",
     "xtend": "^4.0.0"
   }
