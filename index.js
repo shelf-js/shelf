@@ -13,15 +13,18 @@ var supportedTypes = ['string', 'boolean', 'number', 'any']
 var shelf
 
 function Shelf (appName, options) {
-  // TODO handle options
+  // TODO handle more options
   // options: {
   //    auth stuff,
-  //    port,
-  //    host,
   //    everything you can use on createClient
   // }
+  options = options || {}
+  var supportedOptions = {
+    host: options.host || undefined,
+    port: options.port || undefined
+  }
   this.appName = appName
-  this.storage = new Storage()
+  this.storage = new Storage(supportedOptions)
 
   // Switch the default extend and make
   // this extend method public

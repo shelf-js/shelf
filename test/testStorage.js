@@ -5,7 +5,7 @@ var shelfStorage = (function () {
 
   var init = function () {
     myShelf = shelf.mount('test', {
-      host: 'localhost',
+      host: '127.0.0.1',
       port: 6379
     })
     return myShelf
