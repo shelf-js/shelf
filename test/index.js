@@ -13,13 +13,11 @@ lab.experiment('Shelf Init', () => {
       port: 6379
     })
 
-    try {
-      shelfInstance.extend()
-    } catch (err) {
-      Code.expect(err).to.not.be.null()
-      Code.expect(err.message).to.equal('You need to define a valid prefix for the app')
-      done()
-    }
+    Code.expect(
+      () => shelfInstance.extend()
+    ).to.throw(Error, 'You need to define a valid prefix for the app')
+
+    done()
   })
 
   lab.test('Invalid prefix', (done) => {
@@ -28,13 +26,11 @@ lab.experiment('Shelf Init', () => {
       port: 6379
     })
 
-    try {
-      shelfInstance.extend()
-    } catch (err) {
-      Code.expect(err).to.not.be.null()
-      Code.expect(err.message).to.equal('You need to define a valid prefix for the app')
-      done()
-    }
+    Code.expect(
+      () => shelfInstance.extend()
+    ).to.throw(Error, 'You need to define a valid prefix for the app')
+
+    done()
   })
 
   lab.test('Empty name', (done) => {
@@ -43,13 +39,11 @@ lab.experiment('Shelf Init', () => {
       port: 6379
     })
 
-    try {
-      shelfInstance.extend({name: null})
-    } catch (err) {
-      Code.expect(err).to.not.be.null()
-      Code.expect(err.message).to.equal('You need to define a valid name for the model')
-      done()
-    }
+    Code.expect(
+      () => shelfInstance.extend({name: null})
+    ).to.throw(Error, 'You need to define a valid name for the model')
+
+    done()
   })
 
   lab.test('Invalid name', (done) => {
@@ -58,13 +52,11 @@ lab.experiment('Shelf Init', () => {
       port: 6379
     })
 
-    try {
-      shelfInstance.extend({name: 123})
-    } catch (err) {
-      Code.expect(err).to.not.be.null()
-      Code.expect(err.message).to.equal('You need to define a valid name for the model')
-      done()
-    }
+    Code.expect(
+      () => shelfInstance.extend({name: 123})
+    ).to.throw(Error, 'You need to define a valid name for the model')
+
+    done()
   })
 
   lab.test('Invalid Props', (done) => {
@@ -73,13 +65,11 @@ lab.experiment('Shelf Init', () => {
       port: 6379
     })
 
-    try {
-      shelfInstance.extend({name: '123', props: {isJoi: false}})
-    } catch (err) {
-      Code.expect(err).to.not.be.null()
-      Code.expect(err.message).to.equal('Model 123: must have props defined as a Joi Object Schema')
-      done()
-    }
+    Code.expect(
+      () => shelfInstance.extend({name: '123', props: {isJoi: false}})
+    ).to.throw(Error, 'Model 123: must have props defined as a Joi Object Schema')
+
+    done()
   })
 
   lab.test('Invalid Props', (done) => {
@@ -88,13 +78,11 @@ lab.experiment('Shelf Init', () => {
       port: 6379
     })
 
-    try {
-      shelfInstance.extend({name: '123', props: {isJoi: true, _type: 'array'}})
-    } catch (err) {
-      Code.expect(err).to.not.be.null()
-      Code.expect(err.message).to.equal('Model 123: must have props defined as a Joi Object Schema')
-      done()
-    }
+    Code.expect(
+      () => shelfInstance.extend({name: '123', props: {isJoi: true, _type: 'array'}})
+    ).to.throw(Error, 'Model 123: must have props defined as a Joi Object Schema')
+
+    done()
   })
 
   lab.test('Invalid Props', (done) => {
@@ -103,13 +91,11 @@ lab.experiment('Shelf Init', () => {
       port: 6379
     })
 
-    try {
-      shelfInstance.extend({name: '123', props: Joi.object().keys({})})
-    } catch (err) {
-      Code.expect(err).to.not.be.null()
-      Code.expect(err.message).to.equal('Model 123: must have at least one property defined')
-      done()
-    }
+    Code.expect(
+      () => shelfInstance.extend({name: '123', props: Joi.object().keys({})})
+    ).to.throw(Error, 'Model 123: must have at least one property defined')
+
+    done()
   })
 
   lab.test('Invalid Props', (done) => {
@@ -118,13 +104,11 @@ lab.experiment('Shelf Init', () => {
       port: 6379
     })
 
-    try {
-      shelfInstance.extend({name: '123', props: Joi.object().keys({prop1: Joi.string()})})
-    } catch (err) {
-      Code.expect(err).to.not.be.null()
-      Code.expect(err.message).to.equal('Model 123: must have at least one key defined')
-      done()
-    }
+    Code.expect(
+      () => shelfInstance.extend({name: '123', props: Joi.object().keys({prop1: Joi.string()})})
+    ).to.throw(Error, 'Model 123: must have at least one key defined')
+
+    done()
   })
 
   lab.test('Invalid Props', (done) => {
@@ -133,17 +117,15 @@ lab.experiment('Shelf Init', () => {
       port: 6379
     })
 
-    try {
-      shelfInstance.extend({
+    Code.expect(
+      () => shelfInstance.extend({
         name: '123',
         props: Joi.object().keys({prop1: Joi.string()}),
         keys: ['prop1.name2']
       })
-    } catch (err) {
-      Code.expect(err).to.not.be.null()
-      Code.expect(err.message).to.equal('Model 123: The model\'s keys need to be root properties')
-      done()
-    }
+    ).to.throw(Error, 'Model 123: The model\'s keys need to be root properties')
+
+    done()
   })
 
   lab.test('Invalid Props', (done) => {
@@ -152,17 +134,15 @@ lab.experiment('Shelf Init', () => {
       port: 6379
     })
 
-    try {
-      shelfInstance.extend({
+    Code.expect(
+      () => shelfInstance.extend({
         name: '123',
         props: Joi.object().keys({prop1: Joi.string()}),
         keys: ['prop2']
       })
-    } catch (err) {
-      Code.expect(err).to.not.be.null()
-      Code.expect(err.message).to.equal('Model 123: The model\'s key prop2 need to be a defined property in Shelf.extend')
-      done()
-    }
+    ).to.throw(Error, 'Model 123: The model\'s key prop2 need to be a defined property in Shelf.extend')
+
+    done()
   })
 
   lab.test('OK', (done) => {
