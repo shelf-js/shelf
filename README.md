@@ -12,24 +12,29 @@ Shelf gives you CRUD operation on your objects over Redis, so you can create com
 
 Shelf uses [joi](https://github.com/hapijs/joi) for schema validation.
 
+> If you're using 0.10 or 0.12 node version, please use `shelf@1`. You can also look at the code at the `1.x.x` branch.
+
 # Example
 
 ```javascript
 const Shelf = require('shelf')
 const Joi = require('joi')
 
-const myModel = Shelf('MyApp', {
+const Storage = Shelf('MyApp', {
   port: 6379,
   host: '127.0.0.1'
 })
-.extend({
+
+const MyModel = Storage.extend({
   name: 'MySchema',
   props: Joi.object().keys({
     prop1: Joi.string(),
     prop2: Joi.string()
   }),
   keys: ['prop1']
-})({prop1: 'Hello'})
+})
+
+let myModel = MyModel({prop1: 'Hello'})
 
 myModel.save()
 ```
