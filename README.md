@@ -12,20 +12,20 @@ Shelf gives you CRUD operation on your objects over Redis, so you can create com
 
 Shelf uses [joi](https://github.com/hapijs/joi) for schema validation.
 
-> If you're using 0.10 or 0.12 node version, please use `shelf@1`. You can also look at the code at the `1.x.x` branch.
+> This shelf version is for 0.10 and 0.12 node versions. We are using `Joi@6` on this.
 
 # Example
 
 ```javascript
-const Shelf = require('shelf')
-const Joi = require('joi')
+var Shelf = require('shelf')
+var Joi = require('joi')
 
-const Storage = Shelf('MyApp', {
+var Storage = Shelf('MyApp', {
   port: 6379,
   host: '127.0.0.1'
 })
 
-const MyModel = Storage.extend({
+var MyModel = Storage.extend({
   name: 'MySchema',
   props: Joi.object().keys({
     prop1: Joi.string(),
@@ -34,7 +34,7 @@ const MyModel = Storage.extend({
   keys: ['prop1']
 })
 
-let myModel = MyModel({prop1: 'Hello'})
+var myModel = MyModel({prop1: 'Hello'})
 
 myModel.save()
 ```
@@ -45,6 +45,4 @@ Check the examples for further information.
 
 # Contributing
 
-We use [standard js](https://github.com/feross/standard).
-
-In order to run the tests you should have an Redis instance running locally.
+If you want to contribute please see `master` branch.
