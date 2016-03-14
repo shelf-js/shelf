@@ -4,12 +4,11 @@
   "description": "Redis Object Document Mapper (ODM)",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/lab/bin/lab --verbose",
+    "test": "./node_modules/lab/bin/lab --verbose --leaks",
     "test-cov": "./node_modules/lab/bin/lab --verbose -c"
   },
   "repository": "https://github.com/shelf-js/shelf",
   "pre-commit": [
-    "lint",
     "test"
   ],
   "keywords": [
@@ -44,6 +43,7 @@
     "proxyquire": "^1.7.4"
   },
   "dependencies": {
+    "babel-polyfill": "^6.7.2",
     "joi": "^6.10.1",
     "lodash": "^4.3.0",
     "redis": "^2.4.2"
