@@ -2,6 +2,7 @@
 
 const Schema = require('./lib/schema')
 const Storage = require('./lib/storage')
+const Joi = require('joi')
 
 function Shelf (appName, options) {
   options = options || {}
@@ -30,6 +31,13 @@ function Shelf (appName, options) {
     }
     if (!options.keys || options.keys.length <= 0) {
       throw new Error('Model ' + options.name + ': must have at least one key defined')
+    }
+    if (options.methods) {
+      let methodsSchema = Joi.object().pattern(/.*/, Joi.func()).required()
+      let err = Joi.validate(options.methods, methodsSchema)
+      if (err && err.error) {
+        throw new Error('Model ' + options.name + ' has invalid methods: ' + err.error.details[0].message)
+      }
     }
 
     options.keys.forEach((key) => {

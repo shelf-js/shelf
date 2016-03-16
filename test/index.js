@@ -145,13 +145,54 @@ lab.experiment('Shelf Init', () => {
     done()
   })
 
+  lab.test('Invalid methods - string', (done) => {
+    let shelfInstance = Shelf('Test', {
+      host: '127.0.0.1',
+      port: 6379
+    })
+
+    Code.expect(
+      () => shelfInstance.extend({
+        name: '123',
+        props: Joi.object().keys({prop1: Joi.string()}),
+        keys: ['prop1'],
+        methods: 'invalid'
+      })
+    ).to.throw(Error, 'Model 123 has invalid methods: \"value\" must be an object')
+
+    done()
+  })
+
+  lab.test('Invalid methods - not functions', (done) => {
+    let shelfInstance = Shelf('Test', {
+      host: '127.0.0.1',
+      port: 6379
+    })
+
+    Code.expect(
+      () => shelfInstance.extend({
+        name: '123',
+        props: Joi.object().keys({prop1: Joi.string()}),
+        keys: ['prop1'],
+        methods: {
+          hi: 1234
+        }
+      })
+    ).to.throw(Error, 'Model 123 has invalid methods: \"hi\" must be a Function')
+
+    done()
+  })
+
   lab.test('OK', (done) => {
     let shelfInstance = Shelf('Test')
 
     shelfInstance.extend({
       name: '123',
       props: Joi.object().keys({prop1: Joi.string()}),
-      keys: ['prop1']
+      keys: ['prop1'],
+      methods: {
+        hi: function () {}
+      }
     })
     done()
   })
