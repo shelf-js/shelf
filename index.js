@@ -45,7 +45,8 @@ function Shelf (appName, options) {
     return Schema(options)
   }
   return {
-    extend
+    extend,
+    client: storage
   }
 }
 
