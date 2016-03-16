@@ -9,13 +9,15 @@ function Shelf (appName, options) {
 
   let storage = Storage(options)
 
-  function extend (options) {
-    options = options || {}
+  function extend (extendOptions) {
     options.prefix = appName
     options.storage = storage
 
-    options.props = options.props || options.properties
-    options.keys = options.keys || options.key
+    extendOptions = extendOptions || {}
+    options.name = extendOptions.name
+    options.props = extendOptions.props || extendOptions.properties
+    options.keys = extendOptions.keys || extendOptions.key
+    options.methods = extendOptions.methods
 
     if (!options.prefix || typeof options.prefix !== 'string') {
       throw new Error('You need to define a valid prefix for the app')
