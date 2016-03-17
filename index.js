@@ -2,19 +2,22 @@
 
 const Schema = require('./lib/schema')
 const Storage = require('./lib/storage')
+const Joi = require('joi')
 
 function Shelf (appName, options) {
   options = options || {}
 
   let storage = Storage(options)
 
-  function extend (options) {
-    options = options || {}
+  function extend (extendOptions) {
     options.prefix = appName
     options.storage = storage
 
-    options.props = options.props || options.properties
-    options.keys = options.keys || options.key
+    extendOptions = extendOptions || {}
+    options.name = extendOptions.name
+    options.props = extendOptions.props || extendOptions.properties
+    options.keys = extendOptions.keys || extendOptions.key
+    options.methods = extendOptions.methods
 
     if (!options.prefix || typeof options.prefix !== 'string') {
       throw new Error('You need to define a valid prefix for the app')
@@ -31,6 +34,13 @@ function Shelf (appName, options) {
     if (!options.keys || options.keys.length <= 0) {
       throw new Error('Model ' + options.name + ': must have at least one key defined')
     }
+    if (options.methods) {
+      let methodsSchema = Joi.object().pattern(/.*/, Joi.func()).required()
+      let err = Joi.validate(options.methods, methodsSchema)
+      if (err && err.error) {
+        throw new Error('Model ' + options.name + ' has invalid methods: ' + err.error.details[0].message)
+      }
+    }
 
     options.keys.forEach((key) => {
       if (key.indexOf('.') > 0) {
@@ -45,7 +55,8 @@ function Shelf (appName, options) {
     return Schema(options)
   }
   return {
-    extend
+    extend,
+    client: storage
   }
 }
 
