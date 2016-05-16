@@ -203,4 +203,40 @@ lab.experiment('Model', () => {
       }
     }
   })
+
+  lab.test('Create model from assign', (done) => {
+    let MyModel = Storage.extend({
+      name: 'myModel',
+      props: Joi.object().keys({
+        prop1: Joi.string(),
+        prop2: Joi.string()
+      }),
+      keys: ['prop1']
+    })
+
+    let model = MyModel({prop1: 'value', prop2: 'value2'})
+
+    let modelB = {prop2: 'value3'}
+
+    model = Object.assign({}, model, modelB)
+
+    model.save((err, message) => {
+      Code.expect(err).to.be.null()
+      Code.expect(message).to.equal('OK')
+      MyModel.get({prop1: 'value'}, (err, model) => {
+        Code.expect(err).to.be.null()
+        Code.expect(model.prop1).to.equal('value')
+        Code.expect(model.prop2).to.equal('value3')
+        model.del((err, nDeleted) => {
+          Code.expect(err).to.be.null()
+          Code.expect(nDeleted).to.equal(1)
+          MyModel.get({prop1: 'value'}, (err, model) => {
+            Code.expect(err).to.be.null()
+            Code.expect(model).to.be.null()
+            done()
+          })
+        })
+      })
+    })
+  })
 })
