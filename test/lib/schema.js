@@ -203,4 +203,60 @@ lab.experiment('Model', () => {
       }
     }
   })
+
+  lab.test('Get all models', (done) => {
+    let MyModel = Storage.extend({
+      name: 'mySpecialModel',
+      props: Joi.object().keys({
+        prop1: Joi.string(),
+        prop2: Joi.string()
+      }),
+      keys: ['prop1']
+    })
+    let model1 = MyModel({prop1: 'model1'})
+    let model2 = MyModel({prop1: 'model2'})
+
+    model1.save((err, message) => {
+      Code.expect(err).to.be.null()
+      Code.expect(message).to.equal('OK')
+      model2.save((err, message) => {
+        Code.expect(err).to.be.null()
+        Code.expect(message).to.equal('OK')
+        MyModel.getAll((err, models) => {
+          Code.expect(err).to.be.null()
+          Code.expect(models.length).to.equal(2)
+          done()
+        })
+      })
+    })
+  })
+
+  lab.test('Get all models with filter', (done) => {
+    let MyModel = Storage.extend({
+      name: 'mySpecialModel',
+      props: Joi.object().keys({
+        prop1: Joi.string(),
+        prop2: Joi.string()
+      }),
+      keys: ['prop1']
+    })
+    let model1 = MyModel({prop1: 'model1'})
+    let model2 = MyModel({prop1: 'model2'})
+
+    model1.save((err, message) => {
+      Code.expect(err).to.be.null()
+      Code.expect(message).to.equal('OK')
+      model2.save((err, message) => {
+        Code.expect(err).to.be.null()
+        Code.expect(message).to.equal('OK')
+        MyModel.getAll((model) => {
+          return model.prop1 === 'model1'
+        }, (err, models) => {
+          Code.expect(err).to.be.null()
+          Code.expect(models.length).to.equal(1)
+          done()
+        })
+      })
+    })
+  })
 })
