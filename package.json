@@ -46,9 +46,10 @@
     "standard": "^6.0.4"
   },
   "dependencies": {
+    "async": "^2.0.0-rc.5",
     "hiredis": "^0.4.1",
     "joi": "^7.2.3",
-    "lodash": "^4.3.0",
+    "lodash": "^4.12.0",
     "redis": "^2.4.2"
   }
 }
