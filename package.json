@@ -1,6 +1,6 @@
 {
   "name": "shelf",
-  "version": "2.1.1",
+  "version": "2.2.1",
   "description": "Redis Object Document Mapper (ODM)",
   "main": "index.js",
   "scripts": {
