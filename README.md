@@ -1,3 +1,6 @@
+# Deprecated
+Please note that this project **is not actively maintained anymore** and that further **releases to npm after 2.x.x are not for this module** 
+
 ![shelf Logo](https://avatars1.githubusercontent.com/u/14891842?v=3&s=200)
 
 Object Document Mapper (ODM) for Node.js who uses Redis as its store.
